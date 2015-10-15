@@ -1,69 +1,99 @@
 #!/usr/bin/python2
 
 import sys
+import json
+
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
-class KoamWidget(QTabWidget):
+class KoamView(QTabWidget):
 
     def __init__(self, parent = None): 
         QTabWidget.__init__(self, parent)
         self.tabs = {}
 
-    def addHost(self, name): 
+    def add(self, name): 
         self.tabs[name] = QTextBrowser() 
         self.addTab(self.tabs[name], name)
+        font = QFont("Monospace")
+        font.setPointSize(8)
+        self.tabs[name].setCurrentFont(font)
 
-    def updateHost(self, message):
-        name = message.split()[0]
+    def update(self, name, message):
+        if name not in self.tabs:
+            self.add(name)
         self.tabs[name].append(message)
 
     def closeEvent(self, event):
         self.proc.close()
         event.accept()
 
-class MusshProcess(QProcess):
+class KoamProcess(QProcess):
     
-    def __init__(self, parent = None): 
-        QProcess.__init__(self, parent)
-        self.readyReadStandardOutput.connect(self.addStdout)
-        self.readyReadStandardError.connect(self.addStderr)
-        self.finished.connect(self.stop)
+    def __init__(self, controller): 
+        QProcess.__init__(self)
+        self.controller = controller
+        self.readyReadStandardOutput.connect(self.out)
+        self.readyReadStandardError.connect(self.err)
+        self.finished.connect(self.reportFinished)
+        self.stateChanged.connect(self.reportState)
+        self.error.connect(self.reportError)
 
-    def start(self, command, arguments):
+    def reportError(self, err):
+        print "Got err: " + str(err)
+
+    def reportState(self, state):
+        print "Got state: " + str(state)
+
+    def reportFinished(self, err, status):
+        print "Got fin: " + str(err) + ", " + str(status)
+
+    def run(self, command, arguments):
         self.start(command, arguments)
+        self.waitForStarted()
 
     def close(self):
         self.terminate()
         self.waitForFinished(1000)
         
-    def addStdout(self):
-        self.widget.updateHost(QString.fromLocal8Bit(self.readAllStandardOutput()))
+    def out(self):
+        for line in str(self.readAllStandardOutput()).splitlines():
+            self.controller.out(line)
 
-    def addStderr(self):
-        self.widget.updateHost(QString.fromLocal8Bit(self.readAllStandardError()))
+    def err(self):
+        self.controller.err(str(QString.fromLocal8Bit(self.readAllStandardError())))
 
-class KoamController:
+class KoamController(QObject):
     
-    def __init__(self, args): 
-        self.app = QApplication(args)
-        self.view = KoamWidget()
-        self.model = MusshProcess()
-    
-        self.view.proc = self.model
-        self.model.widget = self.view
+    def __init__(self):
+        QObject.__init__(self)
 
-        self.hosts = ""
-        for i in args:
-            self.view.addHost(i)
-            self.hosts += i + " "
-
-    def run(self):
+    def run(self, argv):
+        self.app = QApplication(argv)
+        self.view = KoamView()
+        self.proc = KoamProcess(self)
+        self.view.proc = self
         self.view.show()
-        self.model.start("oam-mussh", self.hosts)
-    
+        self.proc.run("oam-status", ["rawnet"] + argv[1:])
+        self.view.update("Summary", "oam-status " + " ".join(["rawnet"] + argv[1:]))
         sys.exit(self.app.exec_())
         
+    def stop(self):
+        print "STOP!"
+
+    def close(self):
+        print "CLOSE!"
+        self.proc.close()
+
+    def out(self, msg):
+        fields = json.loads(msg)
+        print "controller fields=" + str(fields)
+        self.view.update(fields['Host'], msg[8:])
+        self.view.update("Summary", msg)
+
+    def err(self, msg):
+        self.view.update("Error Log", msg)
+
 if __name__ == "__main__":
-    KoamController(sys.argv).run()
+    KoamController().run(sys.argv)
 
