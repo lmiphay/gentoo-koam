@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import sys
+import os
 import json
 
 from PyQt4.QtCore import *
@@ -37,7 +38,21 @@ class KoamStatus:
         msg['OAM Last Cmd'] = msg['OAM Last Cmd'][:25]
         msg['emerge'] = msg['emerge'][:45]
         return msg
- 
+
+class KoamText(QTextBrowser):
+
+    def __init__(self, parent = None):
+        QTextBrowser.__init__(self, parent)
+        self.setCurrentFont(KoamFont())
+        self.setContextMenuPolicy(Qt.CustomContextMenu);
+        self.customContextMenuRequested.connect(self.rightMenu)
+
+    def rightMenu(self, pos):
+        menu = QMenu()
+        clearAction = menu.addAction("Clear")
+        clearAction.triggered.connect(self.clear)
+        menu.exec_(self.mapToGlobal(pos))
+
 class KoamHost(QWidget):
     
     def __init__(self, parent = None): 
@@ -45,8 +60,7 @@ class KoamHost(QWidget):
         self.layout = QVBoxLayout()
         self.header = QLabel()
         self.header.setFont(KoamFont())
-        self.logmsg = QTextBrowser()
-        self.logmsg.setCurrentFont(KoamFont())
+        self.logmsg = KoamText()
         self.layout.addWidget(self.header)
         self.layout.addWidget(self.logmsg)
         self.setLayout(self.layout)
@@ -72,10 +86,6 @@ class KoamView(QTabWidget):
         if name not in self.tabs:
             self.add(name)
         self.tabs[name].add(KoamStatus.layout(message))
-
-    def closeEvent(self, event):
-        self.proc.close()
-        event.accept()
 
 class KoamProcess(QProcess):
     
@@ -103,6 +113,22 @@ class KoamProcess(QProcess):
     def err(self):
         self.controller.err(self.readAllStandardError())
 
+class KoamMainWindow(QMainWindow):
+
+    def __init__(self, controller):
+        QMainWindow.__init__(self)
+        self.controller = controller
+        self.view = KoamView()
+        self.setCentralWidget(self.view)
+        self.statusBar().showMessage("Starting")
+        self.resize(850,256)
+        self.setWindowTitle("koam on " + os.uname()[1])
+        self.show()
+
+    def closeEvent(self, event):
+        self.controller.close()
+        event.accept()
+
 class KoamController(QObject):
     
     def __init__(self):
@@ -110,11 +136,8 @@ class KoamController(QObject):
 
     def run(self, argv):
         self.app = QApplication(argv)
-        self.view = KoamView()
+        self.win = KoamMainWindow(self)
         self.proc = KoamProcess(self)
-        self.view.proc = self
-        self.view.resize(850,256)
-        self.view.show()
         self.proc.run("oam-status", ["rawnet"] + argv[1:])
         sys.exit(self.app.exec_())
         
@@ -123,8 +146,8 @@ class KoamController(QObject):
 
     def out(self, msg):
         fields = json.loads(msg)
-        self.view.update("Summary", fields)
-        self.view.update(fields['Host'], fields)
+        self.win.view.update("Summary", fields)
+        self.win.view.update(fields['Host'], fields)
 
     def err(self, msg):
         self.view.update("Error Log", msg)
