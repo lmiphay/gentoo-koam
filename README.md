@@ -6,9 +6,9 @@ gentoo-koam provides a UI to track merges on gentoo servers.
 
 #### Installation
 
-1. add the lmiphay overlay (available from layman)
-2. keyword app-portage/gentoo-koam ( echo '=app-portage/gentoo-koam-9999 ~amd64' >>/etc/portage/package.keywords )
-3. emerge app-portage/gentoo-koam
+1. add the lmiphay overlay (available from layman: `layman -a lmiphay`)
+2. keyword app-portage/gentoo-koam ( `echo '=app-portage/gentoo-koam-9999 ~amd64' >>/etc/portage/package.keywords` )
+3. `emerge app-portage/gentoo-koam`
 
 #### Dependencies
 
@@ -19,10 +19,12 @@ gentoo-koam provides a UI to track merges on gentoo servers.
 
 The `koam` script takes a list of servers to monitor:
 
-`$ koam
+```
+$ koam
 usage: koam <server0>...<serverN>
 $ koam kippure sorrel seefin &
-$`
+$
+```
 
 #### Copyright
 
