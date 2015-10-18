@@ -89,14 +89,16 @@ class KoamView(QTabWidget):
 
 class KoamProcess(QProcess):
     
-    def __init__(self, controller): 
+    def __init__(self, controller, cmd, argv): 
         QProcess.__init__(self)
         self.controller = controller
+        self.cmd = cmd
+        self.argv = argv
         self.readyReadStandardOutput.connect(self.out)
         self.readyReadStandardError.connect(self.err)
 
-    def run(self, command, arguments):
-        self.start(command, arguments)
+    def run(self):
+        self.start(self.cmd, self.argv)
         self.waitForStarted()
 
     def close(self):
@@ -113,14 +115,44 @@ class KoamProcess(QProcess):
     def err(self):
         self.controller.err(self.readAllStandardError())
 
+class KoamToolbar(QToolBar):
+
+    def __init__(self, mainwin, controller):
+        QToolBar.__init__(self)
+        self.mainwin = mainwin
+        self.controller = controller
+        self.stopAct = self.makeAction('Stop', 'Ctrl+S', True, self.doStop)
+        self.startAct = self.makeAction('Start', 'Ctrl+S', False, self.doStart)
+
+    def doStop(self):
+        self.mainwin.msg("Paused")
+        self.stopAct.setEnabled(False)
+        self.startAct.setEnabled(True)
+        self.controller.close()
+
+    def doStart(self):
+        self.mainwin.msg("Running")
+        self.stopAct.setEnabled(True)
+        self.startAct.setEnabled(False)
+        self.controller.startProc()
+
+    def makeAction(self, text, shortcut, enabled, callback):
+        act = QAction(text, self)
+        act.setShortcut(shortcut)
+        act.setEnabled(enabled)
+        act.triggered.connect(callback)
+        self.addAction(act)
+        return act
+
 class KoamMainWindow(QMainWindow):
 
     def __init__(self, controller):
         QMainWindow.__init__(self)
         self.controller = controller
+        self.addToolBar(KoamToolbar(self, controller))
         self.view = KoamView()
         self.setCentralWidget(self.view)
-        self.statusBar().showMessage("Starting")
+        self.msg("Startup")
         self.resize(850,256)
         self.setWindowTitle("koam on " + os.uname()[1])
         self.show()
@@ -129,29 +161,35 @@ class KoamMainWindow(QMainWindow):
         self.controller.close()
         event.accept()
 
+    def msg(self, text):
+        self.statusBar().showMessage(text)
+
 class KoamController(QObject):
     
-    def __init__(self):
+    def __init__(self, argv):
         QObject.__init__(self)
-
-    def run(self, argv):
         self.app = QApplication(argv)
         self.win = KoamMainWindow(self)
-        self.proc = KoamProcess(self)
-        self.proc.run("oam-status", ["rawnet"] + argv[1:])
-        sys.exit(self.app.exec_())
+        self.proc = KoamProcess(self, "oam-status", ["rawnet"] + argv[1:])
+
+    def startProc(self):
+        self.win.msg("Running")
+        self.proc.run() # default on/off?
+        
+    def run(self):
+        self.startProc()
+        return self.app.exec_()
         
     def close(self):
         self.proc.close()
 
     def out(self, msg):
         fields = json.loads(msg)
-        self.win.view.update("Summary", fields)
+        self.win.view.update("All", fields)
         self.win.view.update(fields['Host'], fields)
 
     def err(self, msg):
-        self.view.update("Error Log", msg)
+        self.win.view.update("Error Log", msg)
 
 if __name__ == "__main__":
-    KoamController().run(sys.argv)
-
+    sys.exit(KoamController(sys.argv).run())
