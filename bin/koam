@@ -1,7 +1,7 @@
-#!/usr/bin/python2
+#!/usr/bin/python
 
 import sys
 import koam
 
 if __name__ == "__main__":
-    KoamController(sys.argv).run()
+    koam.KoamController().run(sys.argv)
