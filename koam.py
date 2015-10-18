@@ -35,6 +35,7 @@ class KoamStatus:
         msg['OAM Begin'] = KoamStatus.removedate(msg['Date'], msg['OAM Begin'])
         msg['OAM End'] = KoamStatus.removedate(msg['Date'], msg['OAM End'])
         msg['OAM Last Cmd'] = msg['OAM Last Cmd'][:25]
+        msg['emerge'] = msg['emerge'][:30]
         return msg
  
 class KoamHost(QWidget):
