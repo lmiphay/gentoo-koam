@@ -184,9 +184,14 @@ class KoamController(QObject):
         self.proc.close()
 
     def out(self, msg):
-        fields = json.loads(msg)
-        self.win.view.update("All", fields)
-        self.win.view.update(fields['Host'], fields)
+        try:
+            fields = json.loads(msg)
+            self.win.view.update("All", fields)
+            self.win.view.update(fields['Host'], fields)
+        except ValueError:
+            self.err("ValueError exception for: " + msg)
+        except:
+            self.err("Unexpected exception for: " + msg + ", " + sys.exc_info()[0])
 
     def err(self, msg):
         self.win.view.update("Error Log", msg)
