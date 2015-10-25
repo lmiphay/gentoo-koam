@@ -2,12 +2,13 @@
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
+import koam
 
 class KoamText(QTextBrowser):
 
     def __init__(self, parent = None):
         QTextBrowser.__init__(self, parent)
-        self.setCurrentFont(KoamFont())
+        self.setCurrentFont(koam.KoamFont())
         self.setContextMenuPolicy(Qt.CustomContextMenu);
         self.customContextMenuRequested.connect(self.rightMenu)
 

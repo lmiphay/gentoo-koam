@@ -2,6 +2,7 @@
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
+import koam
 
 class KoamView(QTabWidget):
 
@@ -10,12 +11,12 @@ class KoamView(QTabWidget):
         self.tabs = {}
 
     def add(self, name): 
-        self.tabs[name] = KoamHost()
-        self.tabs[name].setHeader(KoamStatus.header())
+        self.tabs[name] = koam.KoamHost()
+        self.tabs[name].setHeader(koam.KoamStatus.header())
         self.addTab(self.tabs[name], name)
 
     def update(self, name, message):
-        self.message(name, KoamStatus.layout(message))
+        self.message(name, koam.KoamStatus.layout(message))
 
     def message(self, topic, msg):
         if topic not in self.tabs:

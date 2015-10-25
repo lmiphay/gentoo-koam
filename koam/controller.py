@@ -2,6 +2,7 @@
 
 import sys
 import json
+import koam
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -11,8 +12,8 @@ class KoamController(QObject):
     def __init__(self, argv):
         QObject.__init__(self)
         self.app = QApplication(argv)
-        self.win = KoamMainWindow(self)
-        self.proc = KoamProcess(self, "oam-status", ["rawnet"] + argv[1:])
+        self.win = koam.KoamMainWindow(self)
+        self.proc = koam.KoamProcess(self, "oam-status", ["rawnet"] + argv[1:])
 
     def startProc(self):
         self.win.msg("Running")
