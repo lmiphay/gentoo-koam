@@ -5,6 +5,6 @@ setup(name='koam',
       description='Frontend for gentoo-oam',
       author='Paul Healy',
       url='https://github.com/lmiphay/gentoo-koam',
-      py_modules=['koam'],
+      packages=['koam'],
       scripts=['bin/koam']
       )
