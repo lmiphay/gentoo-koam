@@ -83,9 +83,12 @@ class KoamView(QTabWidget):
         self.addTab(self.tabs[name], name)
 
     def update(self, name, message):
-        if name not in self.tabs:
-            self.add(name)
-        self.tabs[name].add(KoamStatus.layout(message))
+        self.message(name, KoamStatus.layout(message))
+
+    def message(self, topic, msg):
+        if topic not in self.tabs:
+            self.add(topic)
+        self.tabs[topic].add(msg)
 
 class KoamProcess(QProcess):
     
@@ -194,7 +197,7 @@ class KoamController(QObject):
             self.err("Unexpected exception for: " + msg + ", " + sys.exc_info()[0])
 
     def err(self, msg):
-        self.win.view.update("Error Log", msg)
+        self.win.view.message("Error Log", msg)
 
 if __name__ == "__main__":
     sys.exit(KoamController(sys.argv).run())
