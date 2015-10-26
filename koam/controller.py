@@ -9,11 +9,13 @@ from PyQt4.QtGui import *
 
 class KoamController(QObject):
     
-    def __init__(self, argv, parent=None):
+    def __init__(self, argv):
         QObject.__init__(self)
-        self.win = koam.KoamMainWindow(self, parent)
         self.proc = koam.KoamProcess(self, "oam-status", ["rawnet"] + argv[1:])
 
+    def setWidget(self, widget):
+        self.win = widget
+        
     def startProc(self):
         self.win.msg("Running")
         self.proc.run() # default on/off?
@@ -32,4 +34,4 @@ class KoamController(QObject):
             self.err("Unexpected exception for: " + msg + ", " + sys.exc_info()[0])
 
     def err(self, msg):
-        self.win.view.message("Error Log", msg)
+        self.win.view.message("Error Log", str(msg))

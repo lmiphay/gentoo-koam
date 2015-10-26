@@ -1,0 +1,7 @@
+#!/bin/bash
+
+plasmoidviewer ../gentoo-koam
+# plasma-windowed ../gentoo-koam
+
+exit 0
+

@@ -14,3 +14,4 @@ from koam.status import KoamStatus
 from koam.text import KoamText
 from koam.toolbar import KoamToolbar
 from koam.view import KoamView
+from koam.widget import KoamWidget

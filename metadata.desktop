@@ -1,0 +1,17 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=koam
+Type=Service
+ServiceTypes=Plasma/Applet
+Icon=/Gentoo-logo-peach.svg
+X-Plasma-API=python
+X-Plasma-MainScript=code/main.py
+X-KDE-PluginInfo-Author=Paul Healy
+X-KDE-PluginInfo-Email=lmiphay@gmail.com
+X-KDE-PluginInfo-Name=koam
+X-KDE-PluginInfo-Version=1.0
+X-KDE-PluginInfo-Website=https://github.com/lmiphay/gentoo-koam
+X-KDE-PluginInfo-Category=Development Tools
+X-KDE-PluginInfo-Depends=
+X-KDE-PluginInfo-License=GPL
+X-KDE-PluginInfo-EnabledByDefault=true
