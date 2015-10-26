@@ -9,19 +9,14 @@ from PyQt4.QtGui import *
 
 class KoamController(QObject):
     
-    def __init__(self, argv):
+    def __init__(self, argv, parent=None):
         QObject.__init__(self)
-        self.app = QApplication(argv)
-        self.win = koam.KoamMainWindow(self)
+        self.win = koam.KoamMainWindow(self, parent)
         self.proc = koam.KoamProcess(self, "oam-status", ["rawnet"] + argv[1:])
 
     def startProc(self):
         self.win.msg("Running")
         self.proc.run() # default on/off?
-        
-    def run(self):
-        self.startProc()
-        return self.app.exec_()
         
     def close(self):
         self.proc.close()

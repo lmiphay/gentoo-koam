@@ -8,8 +8,8 @@ from PyQt4.QtGui import *
 
 class KoamMainWindow(QMainWindow):
 
-    def __init__(self, controller):
-        QMainWindow.__init__(self)
+    def __init__(self, controller, parent=None):
+        QMainWindow.__init__(self, parent)
         self.controller = controller
         self.addToolBar(koam.KoamToolbar(self, controller))
         self.view = koam.KoamView()
