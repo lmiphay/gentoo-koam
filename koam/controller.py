@@ -31,7 +31,7 @@ class KoamController(QObject):
         except ValueError:
             self.err("ValueError exception for: " + msg)
         except:
-            self.err("Unexpected exception for: " + msg + ", " + sys.exc_info()[0])
+            self.err("Unexpected exception for: " + str(msg) + ", " + str(sys.exc_info()[0]) + ", " + str(sys.exc_info()))
 
     def err(self, msg):
         self.win.view.message("Error Log", str(msg))

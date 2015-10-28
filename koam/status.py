@@ -26,3 +26,7 @@ class KoamStatus:
         msg['OAM Last Cmd'] = msg['OAM Last Cmd'][:25]
         msg['emerge'] = msg['emerge'][:45]
         return msg
+
+    @staticmethod
+    def merges(msg):
+        return (int(msg['Merges Made']), int(msg['Total Merges']))
