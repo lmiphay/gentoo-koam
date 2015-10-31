@@ -18,5 +18,5 @@ class KoamMainWindow(QMainWindow):
         self.show()
 
     def closeEvent(self, event):
-        self.controller.close()
+        self.controller.stopAll()
         event.accept()

@@ -11,7 +11,7 @@ from PyQt4.QtGui import *
 class KoamController(QObject):
 
     DISABLE_PASS_QUERY = [ '-o', 'BatchMode=yes']
-    REMOTE_CMD = 'oam-status rawloop'
+    REMOTE_CMD = 'oam-status rawloop & read ; kill $!'
     
     def __init__(self):
         QObject.__init__(self)
@@ -41,10 +41,15 @@ class KoamController(QObject):
     def setWidget(self, widget):
         self.win = widget
         
-    def close(self):
+    def stopAll(self):
         for server in self.proc:
             self.logger.log(logging.INFO, "stopping: %s ", server)
             self.proc[server].close()
+
+    def startAll(self):
+        for server in self.proc:
+            self.logger.log(logging.INFO, "starting: %s ", server)
+            self.proc[server].run()
 
     def out(self, ident, msg):
         self.logger.log(logging.DEBUG, "output: %s - %s", ident, msg)

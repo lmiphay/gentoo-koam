@@ -32,6 +32,8 @@ class KoamProcess(QProcess):
     def close(self):
         self.logger.log(logging.INFO, "close event for %s %s", self.cmd, str(self.argv))
         if self.state() != QProcess.NotRunning:
+            self.write("# shutdown hint\n");
+            self.logger.log(logging.DEBUG, "calling terminate for %s %s", self.cmd, str(self.argv))
             self.terminate()
             self.waitForFinished(1000)
         else:

@@ -22,7 +22,7 @@ class KoamWidget(QWidget):
         self.msg("Startup")
 
     def closeEvent(self, event):
-        self.controller.close()
+        self.controller.stopAll()
         event.accept()
 
     def msg(self, text):

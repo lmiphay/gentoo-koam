@@ -17,13 +17,13 @@ class KoamToolbar(QToolBar):
         self.parent().msg("Paused")
         self.stopAct.setEnabled(False)
         self.startAct.setEnabled(True)
-        self.controller.close()
+        self.controller.stopAll()
 
     def doStart(self):
         self.parent().msg("Running")
         self.stopAct.setEnabled(True)
         self.startAct.setEnabled(False)
-        self.controller.startProc()
+        self.controller.startAll()
 
     def makeAction(self, text, shortcut, enabled, callback):
         act = QAction(text, self)
