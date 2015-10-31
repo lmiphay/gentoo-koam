@@ -12,5 +12,6 @@ class KoamAddServer(QLineEdit):
         self.returnPressed.connect(self.add)
 
     def add(self):
-        koam.KoamObserver.add_server(self.text())
+        for server in self.text().split():
+            koam.KoamObserver.add_server(server)
         self.clear()
