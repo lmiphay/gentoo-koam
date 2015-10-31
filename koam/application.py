@@ -13,7 +13,6 @@ class KoamApplication(QApplication):
         self.toplevel = koam.KoamMainWindow(self.koamwidget, self.controller)
         self.controller.setWidget(self.koamwidget)
         self.logger = logging.getLogger("koam.application")
-        logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s')
         
     def run(self):
         self.logger.log(logging.INFO, "entering event loop")
