@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import logging
+
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
@@ -12,6 +14,7 @@ class KoamPlasmoid(plasmascript.Applet):
 
     def __init__(self, parent, args=None):
         plasmascript.Applet.__init__(self, parent)
+        logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s')
 
     def init(self):
         self.setHasConfigurationInterface(False)
