@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import sys
+import logging
 import json
 import koam
 
@@ -8,30 +9,59 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
 class KoamController(QObject):
+
+    DISABLE_PASS_QUERY = [ '-o', 'BatchMode=yes']
+    REMOTE_CMD = 'oam-status rawloop'
     
     def __init__(self, argv):
         QObject.__init__(self)
-        self.proc = koam.KoamProcess(self, "oam-status", ["rawnet"] + argv[1:])
+        self.proc = {}
+        self.logger = logging.getLogger("koam.controller")
+        for server in argv[1:]:
+            self.add(server)
+
+    def add(self, server):
+        if server not in self.proc:
+            self.logger.log(logging.INFO, "adding: %s ", server)
+            self.proc[server] = koam.KoamProcess(self, server,
+                                                 "ssh", self.DISABLE_PASS_QUERY + [server, self.REMOTE_CMD])
+        else:
+            self.logger.log(logging.ERROR, "not adding: %s - already present", server)
+
+    def remove(self, server):
+        if server in self.proc:
+            self.logger.log(logging.INFO, "removing: %s ", server)
+            self.proc[server].close()
+            del self.proc[server]
+        else:
+            self.logger.log(logging.ERROR, "not removing: %s - not present", server)
 
     def setWidget(self, widget):
         self.win = widget
         
     def startProc(self):
         self.win.msg("Running")
-        self.proc.run() # default on/off?
+        for server in self.proc:
+            self.logger.log(logging.INFO, "starting: %s ", server)
+            self.proc[server].run()
         
     def close(self):
-        self.proc.close()
+        for server in self.proc:
+            self.logger.log(logging.INFO, "stopping: %s ", server)
+            self.proc[server].close()
 
-    def out(self, msg):
+    def out(self, ident, msg):
+        self.logger.log(logging.DEBUG, "output: %s - %s", ident, msg)
         try:
             fields = json.loads(msg)
             self.win.view.update("All", fields)
             self.win.view.update(fields['Host'], fields)
         except ValueError:
-            self.err("ValueError exception for: " + msg)
+            self.err(ident, "ValueError exception for: " + msg)
         except:
-            self.err("Unexpected exception for: " + str(msg) + ", " + str(sys.exc_info()[0]) + ", " + str(sys.exc_info()))
+            self.err(ident, "Unexpected exception for: " + str(msg) +
+                     ", " + str(sys.exc_info()[0]) + ", " + str(sys.exc_info()))
 
-    def err(self, msg):
-        self.win.view.message("Error Log", str(msg))
+    def err(self, ident, msg):
+        self.logger.log(logging.ERROR, "error: %s - %s", ident, msg)
+        self.win.view.message("Error Log", msg)

@@ -6,8 +6,9 @@ import koam
 
 class KoamText(QTextBrowser):
 
-    def __init__(self, parent = None):
+    def __init__(self, name, parent = None):
         QTextBrowser.__init__(self, parent)
+        self.name = name
         self.setCurrentFont(koam.KoamFont())
         self.setContextMenuPolicy(Qt.CustomContextMenu);
         self.customContextMenuRequested.connect(self.rightMenu)
@@ -16,4 +17,12 @@ class KoamText(QTextBrowser):
         menu = QMenu()
         clearAction = menu.addAction("Clear")
         clearAction.triggered.connect(self.clear)
+        removeAction = menu.addAction("Remove")
+        removeAction.triggered.connect(self.remove)
         menu.exec_(self.mapToGlobal(pos))
+
+    def setController(self, controller):
+        self.controller = controller
+
+    def remove(self):
+        self.controller.remove(self.name)
