@@ -8,7 +8,7 @@ class KoamApplication(QApplication):
     
     def __init__(self, argv):
         QApplication.__init__(self, argv)
-        self.controller = koam.KoamController(argv)
+        self.controller = koam.KoamController()
         self.koamwidget = koam.KoamWidget(self.controller)
         self.toplevel = koam.KoamMainWindow(self.koamwidget, self.controller)
         self.controller.setWidget(self.koamwidget)
@@ -16,6 +16,5 @@ class KoamApplication(QApplication):
         logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s')
         
     def run(self):
-        self.controller.startProc()
-        self.logger.log(logging.INFO, "controller started")
+        self.logger.log(logging.INFO, "entering event loop")
         return self.exec_()

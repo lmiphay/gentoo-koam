@@ -21,8 +21,5 @@ class KoamText(QTextBrowser):
         removeAction.triggered.connect(self.remove)
         menu.exec_(self.mapToGlobal(pos))
 
-    def setController(self, controller):
-        self.controller = controller
-
     def remove(self):
-        self.controller.remove(self.name)
+        koam.KoamObserver.rem_server(self.name)

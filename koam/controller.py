@@ -13,7 +13,7 @@ class KoamController(QObject):
     DISABLE_PASS_QUERY = [ '-o', 'BatchMode=yes']
     REMOTE_CMD = 'oam-status rawloop'
     
-    def __init__(self, argv):
+    def __init__(self):
         QObject.__init__(self)
         self.proc = {}
         self.logger = logging.getLogger("koam.controller")
@@ -25,6 +25,8 @@ class KoamController(QObject):
             self.logger.log(logging.INFO, "adding: %s ", server)
             self.proc[server] = koam.KoamProcess(self, server,
                                                  "ssh", self.DISABLE_PASS_QUERY + [server, self.REMOTE_CMD])
+            self.logger.log(logging.INFO, "starting: %s ", server)
+            self.proc[server].run()
         else:
             self.logger.log(logging.ERROR, "not adding: %s - already present", server)
 
@@ -38,12 +40,6 @@ class KoamController(QObject):
 
     def setWidget(self, widget):
         self.win = widget
-        
-    def startProc(self):
-        self.win.msg("Running")
-        for server in self.proc:
-            self.logger.log(logging.INFO, "starting: %s ", server)
-            self.proc[server].run()
         
     def close(self):
         for server in self.proc:

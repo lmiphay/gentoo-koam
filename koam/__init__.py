@@ -4,6 +4,7 @@ __author__ = 'Paul Healy'
 __license__ = 'GPL-2'
 __copyright__ = 'Copyright 2015, Paul Healy under GPL-2'
 
+from koam.addserver import KoamAddServer
 from koam.application import KoamApplication
 from koam.controller import KoamController
 from koam.font import KoamFont

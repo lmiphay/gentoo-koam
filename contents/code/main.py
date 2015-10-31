@@ -20,14 +20,13 @@ class KoamPlasmoid(plasmascript.Applet):
         self.theme.setImagePath("widgets/background")
         self.setBackgroundHints(Plasma.Applet.DefaultBackground)
         self.layout = QGraphicsLinearLayout(Qt.Horizontal, self.applet)
-        self.controller = koam.KoamController(["koamoid", "localhost"])
+        self.controller = koam.KoamController()
         self.koamwidget = koam.KoamWidget(self.controller)
         self.koamGraphicsWidget = self.scene().addWidget(self.koamwidget)
         self.controller.setWidget(self.koamwidget)
         self.layout.addItem(self.koamGraphicsWidget)
         self.applet.setLayout(self.layout)
         self.resize(850, 256)
-        self.controller.startProc()
 
 def CreateApplet(parent):
     return KoamPlasmoid(parent)

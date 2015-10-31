@@ -2,6 +2,7 @@
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
+import koam
 
 class KoamToolbar(QToolBar):
 
@@ -10,6 +11,7 @@ class KoamToolbar(QToolBar):
         self.controller = controller
         self.stopAct = self.makeAction('Stop', 'Ctrl+S', True, self.doStop)
         self.startAct = self.makeAction('Start', 'Ctrl+S', False, self.doStart)
+        self.addWidget(koam.KoamAddServer())
 
     def doStop(self):
         self.parent().msg("Paused")
