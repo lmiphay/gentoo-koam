@@ -8,7 +8,7 @@ class KoamAddServer(QLineEdit):
 
     def __init__(self, parent=None):
         QLineEdit.__init__(self, parent)
-        self.setPlaceholderText('Enter new server name')
+        self.setPlaceholderText('Enter new server name(s) (space separated hostnames)')
         self.returnPressed.connect(self.add)
 
     def add(self):
