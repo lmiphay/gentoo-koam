@@ -13,9 +13,9 @@ class KoamApplication(QApplication):
         self.toplevel = koam.KoamMainWindow(self.koamwidget, self.controller)
         self.controller.setWidget(self.koamwidget)
         self.logger = logging.getLogger("koam.application")
+        logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s')
         
     def run(self):
-        logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s')
         self.controller.startProc()
         self.logger.log(logging.INFO, "controller started")
         return self.exec_()

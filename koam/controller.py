@@ -17,8 +17,8 @@ class KoamController(QObject):
         QObject.__init__(self)
         self.proc = {}
         self.logger = logging.getLogger("koam.controller")
-        for server in argv[1:]:
-            self.add(server)
+        koam.KoamObserver.connect_add(self.add)
+        koam.KoamObserver.connect_rem(self.remove)
 
     def add(self, server):
         if server not in self.proc:

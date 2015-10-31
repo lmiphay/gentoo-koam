@@ -9,6 +9,7 @@ from koam.controller import KoamController
 from koam.font import KoamFont
 from koam.host import KoamHost
 from koam.mainwindow import KoamMainWindow
+from koam.observer import KoamObserver
 from koam.process import KoamProcess
 from koam.progress import KoamProgress
 from koam.status import KoamStatus

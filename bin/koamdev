@@ -9,4 +9,9 @@ print("sys.path=" + str(sys.path))
 if len(sys.argv) < 2:
     sys.exit("usage: " + os.path.basename(sys.argv[0]) + " <server0>...<serverN>")
 else:
-    sys.exit(koam.KoamApplication(sys.argv).run())
+    app = koam.KoamApplication(sys.argv)
+
+    for server in sys.argv[1:]:
+        koam.KoamObserver.add_server(server)
+
+    sys.exit(app.run())
