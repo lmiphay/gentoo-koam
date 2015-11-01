@@ -2,7 +2,13 @@
 
 gentoo-koam provides a UI to track merges on gentoo servers.
 
-![gentoo-koam](screenshots/gentoo-koam.png?raw=true "gentoo-koam sample")
+It provides a summary for each server running updates:
+
+![gentoo-koam](screenshots/gentoo-koam-2.png?raw=true "gentoo-koam sample")
+
+And it provides an at-a-glance set of progress bars for all the servers being monitored:
+
+![gentoo-koam](screenshots/gentoo-koam-3.png?raw=true "gentoo-koam sample")
 
 #### Installation
 
