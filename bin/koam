@@ -7,7 +7,7 @@ import koam
 
 if len(sys.argv) == 2 and sys.argv[1] == '-h':
     sys.exit("usage: " + os.path.basename(sys.argv[0]) +
-             " [-h] [-d] <server0>...<serverN>")
+             " [-h] [-d] [<server0>...<serverN>]")
 else:
 
     if len(sys.argv) == 2 and sys.argv[1] == '-d':

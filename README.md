@@ -17,14 +17,20 @@ gentoo-koam provides a UI to track merges on gentoo servers.
 
 #### Operation
 
-The `koam` script takes a list of servers to monitor:
+`koam` optionally takes a list of servers to monitor:
 
 ```
-$ koam
-usage: koam <server0>...<serverN>
+$ koam -h
+usage: koam [-h] [-d] [<server0>...<serverN>]
 $ koam kippure sorrel seefin &
 $
 ```
+
+Passing the `-d` option will add DEBUG level logging to the console (in addition to the default INFO
+level messages).
+
+The list of servers being monitored can be saved and reloaded at a later time (the save is made to
+`~/.koam/koam.servers` in yaml format).
 
 #### Copyright
 
