@@ -20,7 +20,10 @@ class KoamProgress(QWidget):
     def update(self, server, merges):
         if server not in self.host:
             self.add(server)
-        self.host[server].setValue(merges[0])
+        if merges[0] <= merges[1]:
+            self.host[server].setValue(merges[0])
+        else:
+            self.host[server].setValue(merges[1])
         self.host[server].setMaximum(merges[1])
         self.host[server].setToolTip(str(merges[0]) + " out of " + str(merges[1]) + " merges")
         
