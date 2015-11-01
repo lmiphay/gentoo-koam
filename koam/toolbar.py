@@ -19,23 +19,16 @@ class KoamToolbar(QToolBar):
         self.stopAct = self.makeAction('Stop', 'Ctrl+P', True, self.doStop)
         self.startAct = self.makeAction('Start', 'Ctrl+T', False, self.doStart)
         self.addWidget(koam.KoamAddServer())
-        self.servers = set()
-        koam.KoamObserver.connect_add(self.add_handler)
-        koam.KoamObserver.connect_rem(self.remove_handler)
+        self.prefs = koam.KoamPreferences()
 
     def doLoad(self):
-        if os.path.exists(self.SERVERS):
-            self.servers = pickle.load(open(self.SERVERS, 'rb'))
+        if self.prefs.load():
             self.parent().msg("Loaded")
-            for server in self.servers:
-                koam.KoamObserver.add_server(server)
         else:
             self.parent().msg(self.SERVERS + " not found")
 
     def doSave(self):
-        if not os.path.isdir(self.KOAMDIR):
-            os.mkdir(self.KOAMDIR)
-        pickle.dump(self.servers, open(self.SERVERS, 'wb'))
+        self.prefs.save()
         self.parent().msg("Saved")
 
     def doStop(self):
@@ -57,10 +50,3 @@ class KoamToolbar(QToolBar):
         act.triggered.connect(callback)
         self.addAction(act)
         return act
-
-    def add_handler(self, server):
-        self.servers.add(server)
-
-    def remove_handler(self, server):
-        if server in self.servers:
-            self.servers.remove(server)

@@ -11,6 +11,7 @@ from koam.font import KoamFont
 from koam.host import KoamHost
 from koam.mainwindow import KoamMainWindow
 from koam.observer import KoamObserver
+from koam.preferences import KoamPreferences
 from koam.process import KoamProcess
 from koam.progress import KoamProgress
 from koam.status import KoamStatus
