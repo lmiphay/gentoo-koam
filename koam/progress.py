@@ -15,6 +15,7 @@ class KoamProgress(QWidget):
     def add(self, server):
         self.host[server] = QProgressBar()
         self.host[server].setMinimum(0)
+        self.host[server].setFormat("%v / %m merges")
         self.layout.addRow(server, self.host[server])
  
     def update(self, server, merges):
