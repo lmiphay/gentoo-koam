@@ -6,6 +6,8 @@ __copyright__ = 'Copyright 2015, Paul Healy under GPL-2'
 
 from koam.addserver import KoamAddServer
 from koam.application import KoamApplication
+from koam.checkhost import KoamCheckHost
+from koam.command import KoamCommand
 from koam.controller import KoamController
 from koam.font import KoamFont
 from koam.host import KoamHost
