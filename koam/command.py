@@ -22,8 +22,8 @@ class KoamCommand(QProcess):
         self.argv = argv
         self.readyReadStandardOutput.connect(self.out)
         self.readyReadStandardError.connect(self.err)
-        self.finish.connect(self.fin)
-        self.logger = logging.getLogger("koam.command." + ident)
+        self.finished.connect(self.fin)
+        self.logger = logging.getLogger("koam.command." + str(ident))
         self.output = []
 
     def run(self):
@@ -57,6 +57,6 @@ class KoamCommand(QProcess):
         self.output.append(msg)
 
     def fin(self, exitCode, exitStatus):
-        self.logger.log(logging.INFO, "finish signalled from %s %s: %d %s",
-                        self.cmd, str(self.argv), exitCode, str(exitStatus))
+        self.logger.log(logging.INFO, "finish signalled from %s %s %s: exitCode=%d, exitStatus=%s",
+                        self.cmd, self.ident, str(self.argv), exitCode, str(exitStatus))
         self.result.emit(self.ident, exitCode)
