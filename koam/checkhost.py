@@ -23,7 +23,7 @@ class KoamCheckHost(QObject):
         self.logger.log(logging.INFO, "check host %s", server)
         self.runner[server] = koam.KoamCommand(server, 'ssh',
                                                koam.KoamController.DISABLE_PASS_QUERY +
-                                               [str(server), 'oam-checkconfig', '-e'])
+                                               [str(server), 'oam-checkconfig'])
         self.runner[server].result.connect(self.fin)
         self.runner[server].run()
         self.logger.log(logging.INFO, "check started for %s", server)
