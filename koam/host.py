@@ -4,8 +4,11 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 import koam
 
+""" Manages display of information specific to one
+    server.
+"""
 class KoamHost(QWidget):
-    
+
     def __init__(self, name, parent = None):
         QWidget.__init__(self, parent)
         self.name = name
