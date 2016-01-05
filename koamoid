@@ -1,7 +1,15 @@
 #!/bin/bash
 
-plasmoidviewer ../gentoo-koam
-# plasma-windowed ../gentoo-koam
+if [ -x /usr/bin/plasmoidviewer ] ; then
+    # from: dev-util/plasmate (removed from portage)
+    plasmoidviewer ../gentoo-koam
+elif [ -x /usr/bin/plasma-windowed ] ; then
+    # from: kde-base/plasma-workspace
+    plasma-windowed ../gentoo-koam
+else
+    echo "$(basename $0): need either plasmoidviewer or plasma-windowed to run applet"
+    exit 1
+fi
 
 exit 0
 
